@@ -46,17 +46,24 @@ def read_json(filepath):
     return data
 
 def get_swapi_resource(url, params=None):
-        response_lst = []
-        response = requests.get(url, params=None).json()
-        response_lst.append(response['results'])
-        while response['next'] is not None:
-            response = requests.get(response['next']).json()
-            response_lst.append(response['results'])
-        return response_lst
+    response_lst = []
+    response = requests.get(url, params=None).json()
+    for item in response['results']:
+        response_lst.append(item)
+    while response['next'] is not None:
+        response = requests.get(response['next']).json() # is called 7 times and returns a response with 10 dictionaries each
+        for item in response['results']:
+            response_lst.append(item)
+
+    print(json.dumps(response_lst, indent=2))
+    return response_lst
 
 
 def combine_data(default_data, override_data):
     combined_data = default_data.copy()  # shallow
+    # print(json.dumps(default_data[0], indent=2), '\n\n')
+    # print(json.dumps(override_data, indent=2))
+    # print(len(override_data))
 
 ### HERE
 def filter_data(data, filter_keys):
@@ -103,21 +110,13 @@ def main():
     resource = '/planets/'
     url = ENDPOINT + resource
 
-
     filepath = '../input/default/swapi_planets-v1p0.json'
     filename = '../output/final.json'
 
-
-
     basic_info = read_json(filepath)
+    planets_results = get_swapi_resource(url)
 
-
-    planet = basic_info
-    response = get_swapi_resource(url)
-
-    planets_results = response[0]['results']
-
-    # planet = combine_data(planet, planets_results)
+    planet = combine_data(basic_info, planets_results)
     # planet = filter_data(planet, PLANET_KEYS)
     #
     # basic_info = planet
