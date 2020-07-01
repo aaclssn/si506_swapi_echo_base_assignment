@@ -95,20 +95,37 @@ def convert_string_to_float(value):
         return value
 
 def convert_string_to_int(value):
-   pass
+   try:
+       return int(value)
+   except:
+       return value
 
 
 def convert_string_to_list(value, delimiter=','):
-    pass
+    try:
+        if delimiter in value:
+            return value.split(delimiter)
+        else:
+            return value
+    except:
+        return value
 
 def clean_data(entity):
-    pass
+    cleaned_data = []
+    for planet_dict in entity:
+        for key in list(planet_dict.keys()):
+            value = planet_dict[key]
+            if (is_unknown(value)==True):
+                value = None
+                planet_dict[key] = value
+            value = convert_string_to_float(value)
+            value = convert_string_to_int(value)
+            value = convert_string_to_list(value)
+            planet_dict[key] = value
+        cleaned_data.append(planet_dict)
+    return cleaned_data
 
-def extract(data, lst):
-    lst_data = []
-    for entity in data:
-        lst_data.append(entity)
-    return lst_data
+
 
 def assign_crew(entity, crew):
     pass
@@ -135,7 +152,15 @@ def main():
     is_unknown('unknown')
     is_unknown('test')
 
-    print(convert_string_to_float('7.5'))
+    convert_string_to_float('7.5')
+
+    convert_string_to_int('asdf;lj')
+    convert_string_to_int('7')
+
+    convert_string_to_list('a, asdf, asdf, asdf')
+    convert_string_to_list('asdf;lksdjf')
+
+    clean_data(filter_planet)
 
     # write_json(filename, filter_planet)
 
