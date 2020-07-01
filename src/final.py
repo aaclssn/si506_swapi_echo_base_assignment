@@ -37,7 +37,7 @@ VEHICLE_KEYS = (
 )
 
 
-filename = 'final.json'
+filename = '../output/final.json'
 
 def read_json(filepath):
     with open(filepath, 'r', encoding='utf-8') as file_obj:
@@ -48,7 +48,7 @@ def read_json(filepath):
 def get_swapi_resource(url, params=None):
         response_lst = []
         response = requests.get(url, params=None).json()
-        response_lst.append(response)
+        response_lst.append(response['results'])
         while response['next'] is not None:
             response = requests.get(response['next']).json()
             response_lst.append(response['results'])
@@ -57,30 +57,6 @@ def get_swapi_resource(url, params=None):
 
 def combine_data(default_data, override_data):
     combined_data = default_data.copy()  # shallow
-    for i in override_data:
-        print(i.keys())
-    print(default_data)
-     # combined_data = copy.copy(default_data) # shallow
-     # combined_data = copy.deepcopy(default_data) # deep
-    # combined_data.update(override_data)  # in place
-
-        # Dictionary unpacking
-        # combined_data = {**default_data, **override_data}
-
-    # return combined_data
-    # combined_data = default_data.copy()  # shallow
-    #
-    # # combined_data =
-    # # combined_data = {**default_data, **override_data}
-    # # combined_data = copy.copy(default_data) # shallow
-    # # combined_data = copy.deepcopy(default_data) # deep
-    # # data_update = combined_data.update(override_data)  # in place
-    #
-    # # Dictionary unpacking
-    # # dict_override = override_data[0]
-    #
-    # combined_data = default_data.update(dict_override)
-    # return combined_data
 
 ### HERE
 def filter_data(data, filter_keys):
@@ -128,27 +104,25 @@ def main():
     url = ENDPOINT + resource
 
 
-    filepath = 'swapi_planets-v1p0.json'
-    filename = 'final.json'
+    filepath = '../input/default/swapi_planets-v1p0.json'
+    filename = '../output/final.json'
 
 
 
     basic_info = read_json(filepath)
 
 
-    planet = basic_info[0]
-    response = get_swapi_resource(url, {'search': planet['name']})
+    planet = basic_info
+    response = get_swapi_resource(url)
+
     planets_results = response[0]['results']
 
-    planet = combine_data(planet, planets_results)
-    print(planet)
-    planet = filter_data(planet, PLANET_KEYS)
-
-    basic_info = planet
-
-    #print(basic_info)
-
-    write_json(filename, basic_info)
+    # planet = combine_data(planet, planets_results)
+    # planet = filter_data(planet, PLANET_KEYS)
+    #
+    # basic_info = planet
+    #
+    # write_json(filename, basic_info)
 
 if __name__ == '__main__':
     main()
