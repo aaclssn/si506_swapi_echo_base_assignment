@@ -55,15 +55,17 @@ def get_swapi_resource(url, params=None):
         for item in response['results']:
             response_lst.append(item)
 
-    print(json.dumps(response_lst, indent=2))
     return response_lst
 
 
 def combine_data(default_data, override_data):
     combined_data = default_data.copy()  # shallow
-    # print(json.dumps(default_data[0], indent=2), '\n\n')
-    # print(json.dumps(override_data, indent=2))
-    # print(len(override_data))
+    for old_planet_dict in combined_data:
+        for new_planet_dict in override_data:
+            if (old_planet_dict['name'] == new_planet_dict['name']):
+                for key in list(new_planet_dict.keys()):
+                    old_planet_dict[key] = new_planet_dict[key]
+    return combined_data
 
 ### HERE
 def filter_data(data, filter_keys):
