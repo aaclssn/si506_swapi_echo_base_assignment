@@ -67,7 +67,6 @@ def combine_data(default_data, override_data):
                     old_planet_dict[key] = new_planet_dict[key]
     return combined_data
 
-### HERE
 def filter_data(data, filter_keys):
     filtered_planet_data = []
     for planet_dict in data:
@@ -81,10 +80,19 @@ def filter_data(data, filter_keys):
 
 
 def is_unknown(value):
-    pass
+    value = str(value)
+    nulls_lst = [None, 'null', 'unknown', 'n/a']
+    if (value.lower() in nulls_lst):
+        return True
+    else:
+        return False
+
 
 def convert_string_to_float(value):
-    pass
+    try:
+        return float(value)
+    except:
+        return value
 
 def convert_string_to_int(value):
    pass
@@ -123,10 +131,13 @@ def main():
 
     planet = combine_data(basic_info, planets_results)
     filter_planet = filter_data(planet, PLANET_KEYS)
-    #
-    # basic_info = filter_planet
-    #
-    # write_json(filename, basic_info)
+
+    is_unknown('unknown')
+    is_unknown('test')
+
+    print(convert_string_to_float('7.5'))
+
+    # write_json(filename, filter_planet)
 
 if __name__ == '__main__':
     main()
