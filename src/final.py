@@ -69,12 +69,15 @@ def combine_data(default_data, override_data):
 
 ### HERE
 def filter_data(data, filter_keys):
-    record = {}
-    for key in filter_keys:
-        if key in data.keys():
-            record[key] = data[key]
+    filtered_planet_data = []
+    for planet_dict in data:
+        record = {}
+        for key in filter_keys:
+            if key in planet_dict.keys():
+                record[key] = planet_dict[key]
+        filtered_planet_data.append(record)
 
-    return record
+    return filtered_planet_data
 
 
 def is_unknown(value):
@@ -119,9 +122,9 @@ def main():
     planets_results = get_swapi_resource(url)
 
     planet = combine_data(basic_info, planets_results)
-    # planet = filter_data(planet, PLANET_KEYS)
+    filter_planet = filter_data(planet, PLANET_KEYS)
     #
-    # basic_info = planet
+    # basic_info = filter_planet
     #
     # write_json(filename, basic_info)
 
